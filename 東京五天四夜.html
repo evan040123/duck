@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>東京五天四夜旅遊行程表</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2C3E50;
+            --accent: #E74C3C;
+            --bg: #F8F9FA;
+            --card-bg: #FFFFFF;
+            --text-main: #333333;
+            --text-light: #666666;
+            --border: #E0E0E0;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 0.9rem;
+            color: #BDC3C7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .tabs-container {
+            background: white;
+            position: sticky;
+            top: 86px;
+            z-index: 99;
+            box-shadow: 0 4px 6px -4px rgba(0,0,0,0.1);
+        }
+
+        .tabs {
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 100px;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            color: var(--primary);
+            background-color: #f1f3f5;
+        }
+
+        .tab.active {
+            color: var(--accent);
+            border-bottom: 3px solid var(--accent);
+            font-weight: 700;
+        }
+
+        .content-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .day-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .day-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .day-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .timeline {
+            position: relative;
+            margin-left: 15px;
+            padding-left: 25px;
+            border-left: 3px solid #FFCDD2;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -35px;
+            top: 15px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            border: 4px solid var(--bg);
+        }
+
+        .time {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .toggle-btn {
+            background: #F8F9FA;
+            border: 1px solid #E0E0E0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            color: var(--text-main);
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .toggle-btn:hover {
+            background: #e9ecef;
+        }
+
+        .details {
+            display: none;
+            background: #FAFAFA;
+            padding: 15px;
+            border-radius: 0 0 6px 6px;
+            border: 1px solid #E0E0E0;
+            border-top: none;
+            font-size: 0.95rem;
+        }
+
+        .details.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .detail-row {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .detail-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .tag.transport { background: #E3F2FD; color: #1565C0; }
+        .tag.note { background: #FFF3E0; color: #E65100; }
+
+        .detail-text {
+            flex: 1;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* 響應式調整 */
+        @media (max-width: 600px) {
+            .tabs-container { top: 76px; }
+            header { padding: 15px; }
+            header h1 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>東京五天四夜旅遊行程</h1>
+        <p>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            住宿：one@tokyo by insomnia
+        </p>
+    </header>
+
+    <div class="tabs-container">
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('day1', this)">Day 1 (9/7)</div>
+            <div class="tab" onclick="switchTab('day2', this)">Day 2 (9/8)</div>
+            <div class="tab" onclick="switchTab('day3', this)">Day 3 (9/9)</div>
+            <div class="tab" onclick="switchTab('day4', this)">Day 4 (9/10)</div>
+            <div class="tab" onclick="switchTab('day5', this)">Day 5 (9/11)</div>
+        </div>
+    </div>
+
+    <div class="content-container">
+        
+        <!-- Day 1 -->
+        <div id="day1" class="day-content active">
+            <h2 class="day-title">成田機場 → 住宿 → 淺草 → 住宿</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="time">11:30 - 17:15</div>
+                    <div class="title">桃園機場(航廈1) → 成田機場(航廈2)</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">國泰航空 CX450</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">13:00 起飛</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="time">19:45 - 21:25</div>
+                    <div class="title">住宿放行李 & 晚餐：名古屋備長鰻魚-晴空塔(待定)</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">較快: 京成Access 特急(橘色)<br>次: 京成本線(藍色)<br>搭至"押上"後步行6min</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">步行5min, 晴空塔6樓, 最後接客22:00, 盡量早21:00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">21:40 - 22:40</div>
+                    <div class="title">淺草、雷門、唐吉訶德</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">淺紅A-淺草線 (搭至"淺草"站)<br>藍TS-東武晴空塔線 (搭至"Asakusa Sta."站)</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">夜遊、晃晃</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">23:00</div>
+                    <div class="title">回住宿 - one@tokyo by insomnia</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">淺紅A-淺草線 (搭至"押上"站)<br>藍TS-東武晴空塔線 (搭至"晴空塔"站)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 2 -->
+        <div id="day2" class="day-content">
+            <h2 class="day-title">淺草 → 東京車站 → 銀座 → 東京鐵塔</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="time">10:00 - 12:00</div>
+                    <div class="title">淺草雷門</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">淺紅A-淺草線 (搭至"淺草"站)<br>藍TS-東武晴空塔線 (搭至"Asakusa Sta."站)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">12:10 - 13:10</div>
+                    <div class="title">午餐：米久本店</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">徒步</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">深入探討，12:00才開始營業，只收現金</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">13:40 - 14:40</div>
+                    <div class="title">阿美橫町</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">橘G-銀座線 (步行至"田原町"搭至"上野廣小路"再步行5min)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">15:00 - 16:00</div>
+                    <div class="title">東京車站</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">綠JY-山手線 (步行至"御徒町"搭至"東京車站")</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">16:00 - 17:00</div>
+                    <div class="title">點心：根室花丸-壽司</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">徒步</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">車站5樓, 可先抽號碼牌後在車站晃晃</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">17:15 - 19:15</div>
+                    <div class="title">銀座 Shopping</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">紅M-丸之內線 (搭車至"銀座"五分鐘) or 徒步13分鐘</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">木村家紅豆麵包、UQ旗艦店、無印良品旗艦店、伊東屋、LOFT、阪急男士東京店...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">19:30 - 20:30</div>
+                    <div class="title">晚餐：豬排憶大門店</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">淺紅A-淺草線 (步行至"東銀座"搭至"大門"再步行6min)</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">最後接客-20:00, 盡量早</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">20:50 - 21:30</div>
+                    <div class="title">東京鐵塔</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">徒步15min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">22:30</div>
+                    <div class="title">回住宿 - one@tokyo by insomnia</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">淺紅A-淺草線 (步行至"大門"搭至"押上"再步行6min)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 3 -->
+        <div id="day3" class="day-content">
+            <h2 class="day-title">迪士尼</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="time">08:15 - 20:00</div>
+                    <div class="title">迪士尼樂園</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">高速巴士 or 地鐵</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">*前一天至官網查詢入園時間<br>*回程班機劃位<br>**19:15夜間投影秀</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">22:00</div>
+                    <div class="title">回住宿 - one@tokyo by insomnia</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 4 -->
+        <div id="day4" class="day-content">
+            <h2 class="day-title">妙義神社 → 明治神宮 → 原宿 → 澀谷</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="time">09:00 - 11:10</div>
+                    <div class="title">妙義神社</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">淺紅A-淺草線轉橘G-銀座線再轉綠JY-山手線<br>(步行至"押上"搭至"淺草"轉銀座線搭至"上野"再轉山手線搭至"駒込"後步行8min)</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">車程35min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">11:10 - 11:30</div>
+                    <div class="title">明治神宮</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">綠JY-山手線 (步行至"駒込"搭至"代代木"後步行8min)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">11:30 - 12:30</div>
+                    <div class="title">午餐：原宿燒肉 KINTAN</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">徒步</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">*已預約11:30, 請準時</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">12:30 - 14:00</div>
+                    <div class="title">貓街</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">徒步</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">14:10 - 15:00</div>
+                    <div class="title">點心：麵散</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">徒步</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">15:10 - 16:10</div>
+                    <div class="title">表參道</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">徒步13min</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">16:40 - 18:40</div>
+                    <div class="title">SHIBUYA SKY</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">橘G-銀座線 (步行至"表參道"搭至"澀谷車站"後步行5min)</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">*已購票16:40-16:59, 請準時</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">19:00 - 20:00</div>
+                    <div class="title">晚餐：Negishi 道玄坂店</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">徒步</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">牛舌</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">22:00</div>
+                    <div class="title">回住宿 - one@tokyo by insomnia</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 5 -->
+        <div id="day5" class="day-content">
+            <h2 class="day-title">築地 → 成田機場</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="time">09:00 - 10:00</div>
+                    <div class="title">早餐：築地場外市場</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">淺紅A-淺草線 (步行至"押上"搭至"東銀座"後步行11min)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">12:00 - 13:30</div>
+                    <div class="title">成田機場 (免稅/伴手禮)</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">淺紅A-淺草線 (步行至"東銀座"搭至"成田機場")</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="tag note">備註</span>
+                            <span class="detail-text">似乎不用轉車??</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="time">15:45</div>
+                    <div class="title">成田機場(航廈2) → 桃園機場(航廈1)</div>
+                    <button class="toggle-btn" onclick="toggleDetails(this)">查看詳細資訊 <span class="icon">▼</span></button>
+                    <div class="details">
+                        <div class="detail-row">
+                            <span class="tag transport">交通</span>
+                            <span class="detail-text">國泰航空 CX451</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function switchTab(dayId, element) {
+            // 隱藏所有內容
+            document.querySelectorAll('.day-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            // 移除所有 Tab 的 active 狀態
+            document.querySelectorAll('.tab').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // 顯示選擇的內容並加上 active 狀態
+            document.getElementById(dayId).classList.add('active');
+            element.classList.add('active');
+            
+            // 讓頁面稍微捲動到內容頂端 (可選)
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleDetails(btn) {
+            const details = btn.nextElementSibling;
+            const icon = btn.querySelector('.icon');
+            
+            if (details.classList.contains('show')) {
+                details.classList.remove('show');
+                icon.innerText = '▼';
+                btn.style.borderBottomLeftRadius = '6px';
+                btn.style.borderBottomRightRadius = '6px';
+            } else {
+                details.classList.add('show');
+                icon.innerText = '▲';
+                btn.style.borderBottomLeftRadius = '0';
+                btn.style.borderBottomRightRadius = '0';
+            }
+        }
+    </script>
+</body>
+</html>
