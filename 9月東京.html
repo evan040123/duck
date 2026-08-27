@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>東京 5 天 4 夜｜互動旅遊行程</title>
+  <style>
+    :root{
+      --bg:#f6f7fb; --card:#ffffff; --text:#111827; --muted:#6b7280; --line:#e5e7eb;
+      --accent:#111827; --gold:#f3c969; --red:#ef4444; --pink:#fb7185; --green:#22c55e;
+      --orange:#f59e0b; --blue:#3b82f6; --purple:#8b5cf6; --shadow:0 12px 35px rgba(15,23,42,.08);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--text)}
+    a{color:inherit}
+    .hero{background:linear-gradient(135deg,#0f172a 0%,#1f2937 70%,#374151 100%);color:white;padding:44px 20px 30px}
+    .wrap{max-width:1080px;margin:auto}
+    .eyebrow{font-size:13px;opacity:.75;letter-spacing:.12em;text-transform:uppercase}
+    h1{margin:8px 0 8px;font-size:clamp(30px,6vw,56px);line-height:1.05}
+    .hero p{margin:0;color:#d1d5db;max-width:760px}
+    .hero-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:24px}
+    .stat{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px}
+    .stat b{display:block;font-size:18px}.stat span{font-size:12px;color:#cbd5e1}
+    .sticky{position:sticky;top:0;z-index:20;background:rgba(246,247,251,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .toolbar{display:flex;gap:8px;overflow:auto;padding:10px 20px;max-width:1080px;margin:auto}
+    button,.chip{border:0;cursor:pointer;font:inherit}
+    .tab{white-space:nowrap;background:white;border:1px solid var(--line);padding:9px 14px;border-radius:999px;color:#374151}
+    .tab.active{background:#111827;color:white;border-color:#111827}
+    main{padding:24px 20px 60px}
+    .panel{display:none}.panel.active{display:block}
+    .top-cards{display:grid;grid-template-columns:1.15fr .85fr;gap:16px;margin-bottom:18px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+    .card h2,.card h3{margin:0 0 10px}
+    .hotel{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .badge{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:6px 10px;font-size:12px;background:#f3f4f6;color:#374151}
+    .note-list{display:grid;gap:9px}
+    .note{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:#fff8e7;border:1px solid #fde7a9}
+    .timeline{position:relative;margin-top:12px}
+    .item{display:grid;grid-template-columns:92px 1fr;gap:16px;position:relative;padding:0 0 22px}
+    .item:not(:last-child)::after{content:"";position:absolute;left:45px;top:38px;bottom:-4px;width:2px;background:#e5e7eb}
+    .time{font-weight:800;font-size:15px;padding-top:4px}
+    .time small{display:block;font-weight:500;color:var(--muted);font-size:11px;margin-top:3px}
+    .event{background:white;border:1px solid var(--line);border-radius:18px;padding:15px 16px;box-shadow:0 8px 24px rgba(15,23,42,.05)}
+    .event-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+    .event h3{margin:0;font-size:17px}
+    .tags{display:flex;flex-wrap:wrap;gap:6px;margin:9px 0}
+    .tag{font-size:11px;border-radius:999px;padding:5px 8px;background:#f3f4f6;color:#374151}
+    .tag.a{background:#ffe4e6;color:#be123c}.tag.g{background:#fef3c7;color:#92400e}.tag.jy{background:#dcfce7;color:#166534}.tag.ts{background:#dbeafe;color:#1d4ed8}
+    .desc{font-size:14px;color:#4b5563;line-height:1.7}
+    .alert{margin-top:10px;color:#b91c1c;font-weight:700;font-size:13px}
+    details{margin-top:10px}
+    summary{cursor:pointer;color:#374151;font-weight:700;font-size:13px}
+    .check{display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:13px;color:#4b5563}
+    .check input{width:18px;height:18px}
+    .day-title{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-bottom:14px}
+    .day-title h2{margin:0;font-size:28px}.day-title p{margin:4px 0 0;color:var(--muted)}
+    .progress{font-size:13px;color:var(--muted);white-space:nowrap}
+    .progressbar{height:8px;background:#e5e7eb;border-radius:99px;overflow:hidden;margin:8px 0 18px}
+    .progressbar span{display:block;height:100%;width:0;background:#111827;transition:.25s}
+    .footer-note{color:#6b7280;font-size:12px;text-align:center;margin-top:28px}
+    .search{width:100%;border:1px solid var(--line);background:white;border-radius:14px;padding:12px 14px;font:inherit;outline:none}
+    .legend{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    @media(max-width:760px){
+      .hero-grid{grid-template-columns:repeat(2,1fr)}
+      .top-cards{grid-template-columns:1fr}
+      .item{grid-template-columns:72px 1fr;gap:10px}
+      .item:not(:last-child)::after{left:35px}
+      .time{font-size:13px}
+    }
+  </style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">TOKYO TRIP · 5 DAYS / 4 NIGHTS</div>
+    <h1>東京五天四夜</h1>
+    <p>9/7–9/11｜成田・淺草・銀座・迪士尼・原宿・澀谷｜住宿：one@tokyo by insomnia</p>
+    <div class="hero-grid">
+      <div class="stat"><b>5 天 4 夜</b><span>東京自由行</span></div>
+      <div class="stat"><b>CX450 / CX451</b><span>國泰航空</span></div>
+      <div class="stat"><b>成田 T2</b><span>往返航廈</span></div>
+      <div class="stat"><b>押上周邊</b><span>住宿交通核心</span></div>
+    </div>
+  </div>
+</header>
+
+<nav class="sticky">
+  <div class="toolbar">
+    <button class="tab active" data-day="overview">總覽</button>
+    <button class="tab" data-day="d1">DAY 1</button>
+    <button class="tab" data-day="d2">DAY 2</button>
+    <button class="tab" data-day="d3">DAY 3</button>
+    <button class="tab" data-day="d4">DAY 4</button>
+    <button class="tab" data-day="d5">DAY 5</button>
+  </div>
+</nav>
+
+<main class="wrap">
+<section id="overview" class="panel active">
+  <div class="top-cards">
+    <div class="card">
+      <div class="hotel">
+        <div>
+          <span class="badge">🏨 住宿</span>
+          <h2 style="margin-top:10px">one@tokyo by insomnia</h2>
+          <p style="margin:0;color:#6b7280">行程以「押上／晴空塔」一帶作為主要住宿交通節點。</p>
+        </div>
+      </div>
+      <div class="legend">
+        <span class="tag a">A 淺草線</span>
+        <span class="tag ts">TS 東武晴空塔線</span>
+        <span class="tag g">G 銀座線</span>
+        <span class="tag jy">JY 山手線</span>
+        <span class="tag">M 丸之內線</span>
+      </div>
+    </div>
+    <div class="card">
+      <span class="badge">⚠️ 重要提醒</span>
+      <div class="note-list" style="margin-top:10px">
+        <div class="note"><span>🎟️</span><div><b>SHIBUYA SKY</b><br><small>已購票 16:40–16:59，請準時。</small></div></div>
+        <div class="note"><span>🥩</span><div><b>原宿燒肉 KINTAN</b><br><small>已預約 11:30，請準時。</small></div></div>
+        <div class="note"><span>🏰</span><div><b>迪士尼</b><br><small>前一天查官方入園時間；19:15 夜間投影秀。</small></div></div>
+        <div class="note"><span>✈️</span><div><b>回程班機</b><br><small>記得劃位。</small></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>快速搜尋行程</h3>
+    <input id="search" class="search" placeholder="輸入：銀座、晚餐、淺草線、SHIBUYA SKY…" />
+    <div id="searchResults" style="margin-top:12px;color:#6b7280;font-size:14px">輸入關鍵字即可搜尋全部 5 天內容。</div>
+  </div>
+</section>
+
+<section id="d1" class="panel day">
+  <div class="day-title"><div><h2>DAY 1｜9/7 星期一</h2><p>成田機場 → 住宿 → 淺草 → 住宿</p></div><div class="progress" data-progress="d1"></div></div>
+  <div class="progressbar"><span id="bar-d1"></span></div>
+  <div class="timeline">
+    <article class="item event-wrap" data-search="桃園機場 成田機場 國泰航空 CX450">
+      <div class="time">11:30–17:15<small>13:00 起飛</small></div>
+      <div class="event"><div class="event-head"><h3>桃園機場 T1 → 成田機場 T2</h3><span class="badge">✈️ CX450</span></div><div class="desc">國泰航空。抵達後前往住宿。</div><label class="check"><input type="checkbox" data-key="d1-1">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="住宿 one@tokyo insomnia 押上 京成Access特急 京成本線">
+      <div class="time">19:45–20:15<small>30 min</small></div>
+      <div class="event"><div class="event-head"><h3>住宿放行李</h3><span class="badge">🏨 one@tokyo</span></div>
+        <div class="tags"><span class="tag">京成 Access 特急</span><span class="tag">京成本線</span></div>
+        <div class="desc">較快：京成 Access 特急（橘色）。次選：京成本線（藍色）。搭至「押上」後步行約 6 分鐘。</div>
+        <label class="check"><input type="checkbox" data-key="d1-2">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="晚餐 名古屋備長鰻魚 晴空塔">
+      <div class="time">20:25–21:25<small>1 h</small></div>
+      <div class="event"><h3>晚餐：名古屋備長鰻魚－晴空塔（待定）</h3><div class="desc">徒步約 5 分鐘，晴空塔 6 樓。</div><div class="alert">最後接客 21:00，盡量早到。</div><label class="check"><input type="checkbox" data-key="d1-3">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="淺草 雷門 唐吉訶德 淺草線 東武晴空塔線 夜遊">
+      <div class="time">21:40–22:40<small>1 h</small></div>
+      <div class="event"><h3>淺草・雷門・唐吉訶德</h3><div class="tags"><span class="tag a">A 淺草線</span><span class="tag ts">TS 東武晴空塔線</span></div><div class="desc">淺草線：搭至「淺草」站。東武晴空塔線：搭至 Asakusa Sta.。夜遊、晃晃。</div><label class="check"><input type="checkbox" data-key="d1-4">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="回住宿 押上 晴空塔 淺草線 東武晴空塔線">
+      <div class="time">23:00<small>返回住宿</small></div>
+      <div class="event"><h3>回 one@tokyo by insomnia</h3><div class="desc">淺草線搭至「押上」；或東武晴空塔線搭至「晴空塔」站。</div><label class="check"><input type="checkbox" data-key="d1-5">完成此行程</label></div>
+    </article>
+  </div>
+</section>
+
+<section id="d2" class="panel day">
+  <div class="day-title"><div><h2>DAY 2｜9/8 星期二</h2><p>淺草 → 東京車站 → 銀座 → 東京鐵塔</p></div><div class="progress" data-progress="d2"></div></div>
+  <div class="progressbar"><span id="bar-d2"></span></div>
+  <div class="timeline">
+    <article class="item event-wrap" data-search="淺草 雷門 深入探討 淺草線 東武晴空塔線">
+      <div class="time">10:00–12:00<small>2 h</small></div>
+      <div class="event"><h3>淺草・雷門</h3><div class="tags"><span class="tag a">A 淺草線</span><span class="tag ts">TS 東武晴空塔線</span></div><div class="desc">淺草線搭至「淺草」站；或東武晴空塔線搭至 Asakusa Sta.。安排較深入逛訪。</div><label class="check"><input type="checkbox" data-key="d2-1">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="午餐 米久本店 現金">
+      <div class="time">12:10–13:10<small>1 h</small></div>
+      <div class="event"><h3>午餐：米久本店</h3><div class="desc">徒步前往。</div><div class="alert">12:00 才開始營業，只收現金。</div><label class="check"><input type="checkbox" data-key="d2-2">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="阿美橫町 上野廣小路 田原町 銀座線">
+      <div class="time">13:40–14:40<small>1 h</small></div>
+      <div class="event"><h3>阿美橫町</h3><div class="tags"><span class="tag g">G 銀座線</span></div><div class="desc">步行至「田原町」→ 搭至「上野廣小路」→ 再步行約 5 分鐘。</div><label class="check"><input type="checkbox" data-key="d2-3">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="東京車站 御徒町 山手線">
+      <div class="time">15:00–16:00<small>1 h</small></div>
+      <div class="event"><h3>東京車站</h3><div class="tags"><span class="tag jy">JY 山手線</span></div><div class="desc">步行至「御徒町」→ 搭至「東京車站」。</div><label class="check"><input type="checkbox" data-key="d2-4">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="根室花丸 壽司 東京車站 五樓 號碼牌">
+      <div class="time">16:00–17:00<small>1 h</small></div>
+      <div class="event"><h3>點心：根室花丸－壽司</h3><div class="desc">東京車站 5 樓。可先抽號碼牌，再利用等候時間逛車站。</div><label class="check"><input type="checkbox" data-key="d2-5">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="銀座 shopping 木村家 紅豆麵包 UQ 無印良品 伊東屋 LOFT 阪急男士 丸之內線">
+      <div class="time">17:15–19:15<small>2–2.5 h</small></div>
+      <div class="event"><h3>銀座 Shopping</h3><div class="tags"><span class="tag">M 丸之內線</span><span class="tag">徒步</span></div><div class="desc">搭車至「銀座」約 5 分鐘，或步行約 13 分鐘。目標：木村家紅豆麵包、UQ 旗艦店、無印良品旗艦店、伊東屋、LOFT、阪急男士東京店等。</div><label class="check"><input type="checkbox" data-key="d2-6">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="晚餐 豬排檍 大門店 東銀座 大門 淺草線">
+      <div class="time">19:30–20:30<small>1 h</small></div>
+      <div class="event"><h3>晚餐：豬排檍 大門店</h3><div class="tags"><span class="tag a">A 淺草線</span></div><div class="desc">步行至「東銀座」→ 搭至「大門」→ 再步行約 6 分鐘。</div><div class="alert">最後接客 20:00，盡量早到。</div><label class="check"><input type="checkbox" data-key="d2-7">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="東京鐵塔 徒步">
+      <div class="time">20:50–21:30<small>30 min</small></div>
+      <div class="event"><h3>東京鐵塔</h3><div class="desc">從晚餐地點徒步約 15 分鐘。</div><label class="check"><input type="checkbox" data-key="d2-8">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="回住宿 大門 押上 淺草線 one tokyo">
+      <div class="time">22:30<small>返回住宿</small></div>
+      <div class="event"><h3>回 one@tokyo by insomnia</h3><div class="tags"><span class="tag a">A 淺草線</span></div><div class="desc">步行至「大門」→ 搭至「押上」→ 再步行約 6 分鐘。</div><label class="check"><input type="checkbox" data-key="d2-9">完成此行程</label></div>
+    </article>
+  </div>
+</section>
+
+<section id="d3" class="panel day">
+  <div class="day-title"><div><h2>DAY 3｜9/9 星期三</h2><p>迪士尼</p></div><div class="progress" data-progress="d3"></div></div>
+  <div class="progressbar"><span id="bar-d3"></span></div>
+  <div class="timeline">
+    <article class="item event-wrap" data-search="迪士尼 高速巴士 地鐵 入園時間 投影秀">
+      <div class="time">08:15–20:00<small>約 12 h</small></div>
+      <div class="event"><h3>迪士尼</h3><div class="tags"><span class="tag">高速巴士</span><span class="tag">地鐵</span></div><div class="desc">交通方式：高速巴士或地鐵。</div><div class="alert">前一天至官網查詢入園時間；19:15 夜間投影秀；記得辦理回程班機劃位。</div><label class="check"><input type="checkbox" data-key="d3-1">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="回住宿 one tokyo">
+      <div class="time">22:00<small>返回住宿</small></div>
+      <div class="event"><h3>回 one@tokyo by insomnia</h3><div class="desc">行程表未另外標示詳細回程路線。</div><label class="check"><input type="checkbox" data-key="d3-2">完成此行程</label></div>
+    </article>
+  </div>
+</section>
+
+<section id="d4" class="panel day">
+  <div class="day-title"><div><h2>DAY 4｜9/10 星期四</h2><p>妙義神社 → 明治神宮 → 原宿 → 澀谷</p></div><div class="progress" data-progress="d4"></div></div>
+  <div class="progressbar"><span id="bar-d4"></span></div>
+  <div class="timeline">
+    <article class="item event-wrap" data-search="妙義神社 押上 淺草 上野 駒込 淺草線 銀座線 山手線">
+      <div class="time">09:00<small>約 2 h</small></div>
+      <div class="event"><h3>妙義神社</h3><div class="tags"><span class="tag a">A 淺草線</span><span class="tag g">G 銀座線</span><span class="tag jy">JY 山手線</span></div><div class="desc">步行至「押上」→「淺草」轉銀座線 →「上野」再轉山手線 →「駒込」後步行約 8 分鐘。表內標示車程約 35 分鐘。</div><label class="check"><input type="checkbox" data-key="d4-1">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="明治神宮 駒込 代代木 山手線">
+      <div class="time">11:10<small>抵達</small></div>
+      <div class="event"><h3>明治神宮</h3><div class="tags"><span class="tag jy">JY 山手線</span></div><div class="desc">步行至「駒込」→ 搭至「代代木」→ 再步行約 8 分鐘。</div><label class="check"><input type="checkbox" data-key="d4-2">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="午餐 原宿燒肉 KINTAN 預約">
+      <div class="time">11:30–12:30<small>1 h</small></div>
+      <div class="event"><h3>午餐：原宿燒肉 KINTAN</h3><div class="desc">徒步前往。</div><div class="alert">已預約 11:30，請準時。</div><label class="check"><input type="checkbox" data-key="d4-3">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="貓街 原宿">
+      <div class="time">12:30–14:00<small>1 h 30 min</small></div>
+      <div class="event"><h3>貓街</h3><div class="desc">徒步逛街。</div><label class="check"><input type="checkbox" data-key="d4-4">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="點心 麵散">
+      <div class="time">14:10–15:00<small>約 1 h</small></div>
+      <div class="event"><h3>點心：麵散</h3><div class="desc">徒步前往。</div><label class="check"><input type="checkbox" data-key="d4-5">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="表參道">
+      <div class="time">15:10–16:10<small>1 h</small></div>
+      <div class="event"><h3>表參道</h3><div class="desc">徒步約 13 分鐘。</div><label class="check"><input type="checkbox" data-key="d4-6">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="SHIBUYA SKY 澀谷 表參道 銀座線 已購票">
+      <div class="time">16:40–18:40<small>2 h</small></div>
+      <div class="event"><h3>SHIBUYA SKY</h3><div class="tags"><span class="tag g">G 銀座線</span></div><div class="desc">步行至「表參道」→ 搭至「澀谷車站」→ 再步行約 5 分鐘。</div><div class="alert">已購票 16:40–16:59，請準時。</div><label class="check"><input type="checkbox" data-key="d4-7">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="晚餐 Negishi 道玄坂 牛舌">
+      <div class="time">19:00–20:00<small>1 h</small></div>
+      <div class="event"><h3>晚餐：Negishi 道玄坂店</h3><div class="desc">徒步前往。餐點：牛舌。</div><label class="check"><input type="checkbox" data-key="d4-8">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="回住宿 one tokyo">
+      <div class="time">22:00<small>返回住宿</small></div>
+      <div class="event"><h3>回 one@tokyo by insomnia</h3><div class="desc">行程表未另列詳細交通方式。</div><label class="check"><input type="checkbox" data-key="d4-9">完成此行程</label></div>
+    </article>
+  </div>
+</section>
+
+<section id="d5" class="panel day">
+  <div class="day-title"><div><h2>DAY 5｜9/11 星期五</h2><p>築地場外市場 → 成田機場 → 桃園</p></div><div class="progress" data-progress="d5"></div></div>
+  <div class="progressbar"><span id="bar-d5"></span></div>
+  <div class="timeline">
+    <article class="item event-wrap" data-search="早餐 築地場外市場 押上 東銀座 淺草線">
+      <div class="time">09:00–10:00<small>1 h</small></div>
+      <div class="event"><h3>早餐：築地場外市場</h3><div class="tags"><span class="tag a">A 淺草線</span></div><div class="desc">步行至「押上」→ 搭至「東銀座」→ 再步行約 11 分鐘。</div><label class="check"><input type="checkbox" data-key="d5-1">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="成田機場 免稅 伴手禮 東銀座 淺草線">
+      <div class="time">12:00–13:30<small>1.5 h</small></div>
+      <div class="event"><h3>成田機場｜免稅・伴手禮</h3><div class="tags"><span class="tag a">A 淺草線</span></div><div class="desc">表內記錄：步行至「東銀座」→ 搭至「成田機場」。原始備註另註「似乎不用轉車??」。</div><div class="alert">此段交通在原行程表中仍帶有疑問標記，出發前建議再次確認。</div><label class="check"><input type="checkbox" data-key="d5-2">完成此行程</label></div>
+    </article>
+    <article class="item event-wrap" data-search="成田機場 桃園機場 國泰航空 CX451">
+      <div class="time">15:45<small>起飛</small></div>
+      <div class="event"><div class="event-head"><h3>成田機場 T2 → 桃園機場 T1</h3><span class="badge">✈️ CX451</span></div><div class="desc">國泰航空回程班機。</div><label class="check"><input type="checkbox" data-key="d5-3">完成此行程</label></div>
+    </article>
+  </div>
+</section>
+
+<div class="footer-note">勾選紀錄會儲存在目前瀏覽器的 localStorage；重新整理頁面後仍會保留。</div>
+</main>
+
+<script>
+  const tabs=[...document.querySelectorAll('.tab')];
+  const panels=[...document.querySelectorAll('.panel')];
+  tabs.forEach(t=>t.addEventListener('click',()=>{
+    tabs.forEach(x=>x.classList.remove('active'));
+    panels.forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById(t.dataset.day).classList.add('active');
+    window.scrollTo({top:document.querySelector('.sticky').offsetTop,behavior:'smooth'});
+  }));
+
+  const boxes=[...document.querySelectorAll('input[type="checkbox"][data-key]')];
+  boxes.forEach(b=>{
+    b.checked=localStorage.getItem('tokyo-'+b.dataset.key)==='1';
+    b.addEventListener('change',()=>{
+      localStorage.setItem('tokyo-'+b.dataset.key,b.checked?'1':'0');
+      updateProgress();
+    });
+  });
+
+  function updateProgress(){
+    ['d1','d2','d3','d4','d5'].forEach(day=>{
+      const dayBoxes=[...document.querySelectorAll('#'+day+' input[type="checkbox"][data-key]')];
+      const done=dayBoxes.filter(b=>b.checked).length;
+      const pct=dayBoxes.length?Math.round(done/dayBoxes.length*100):0;
+      const label=document.querySelector('[data-progress="'+day+'"]');
+      const bar=document.getElementById('bar-'+day);
+      if(label) label.textContent=`完成 ${done}/${dayBoxes.length}（${pct}%）`;
+      if(bar) bar.style.width=pct+'%';
+    });
+  }
+  updateProgress();
+
+  const search=document.getElementById('search');
+  const results=document.getElementById('searchResults');
+  const allEvents=[...document.querySelectorAll('.event-wrap')];
+  search.addEventListener('input',()=>{
+    const q=search.value.trim().toLowerCase();
+    if(!q){results.innerHTML='輸入關鍵字即可搜尋全部 5 天內容。';return;}
+    const matched=allEvents.filter(el=>(el.dataset.search+' '+el.innerText).toLowerCase().includes(q));
+    if(!matched.length){results.innerHTML='找不到符合的行程。';return;}
+    results.innerHTML=matched.slice(0,12).map(el=>{
+      const day=el.closest('.day').id.toUpperCase();
+      const time=el.querySelector('.time').childNodes[0].textContent.trim();
+      const title=el.querySelector('h3').textContent;
+      return `<div style="padding:9px 0;border-bottom:1px solid #eee"><b>${day}</b> · ${time}｜${title}</div>`;
+    }).join('');
+  });
+</script>
+</body>
+</html>
